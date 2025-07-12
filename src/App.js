@@ -21,7 +21,7 @@ ChartJS.register(
   Legend
 );
 
-const API_URL = "https://b185b63cf619.ngrok-free.app/api/dados"; // Coloque seu link ngrok aqui
+const API_URL = "https://c634cfb672cc.ngrok-free.app/api/dados"; // Coloque seu link ngrok aqui
 
 export default function App() {
   const [dados, setDados] = useState([]);
@@ -29,16 +29,21 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(API_URL);
-        console.log('Status:', res.status);
-        const text = await res.text();
-        console.log('Resposta:', text);
-        const json = JSON.parse(text);
+        const res = await fetch(API_URL, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'
+          }
+        });
+        if (!res.ok) throw new Error(`Erro na requisição: ${res.status}`);
+
+        const json = await res.json();
         setDados(json.slice(-20));
       } catch (err) {
-        console.error("Erro ao buscar dados:", err);
+        console.error('Erro ao buscar dados:', err);
       }
     };
+
+
     fetchData();
     const interval = setInterval(fetchData, 5000); // atualiza a cada 5s
     return () => clearInterval(interval);
