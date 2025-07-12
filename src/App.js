@@ -21,7 +21,7 @@ ChartJS.register(
   Legend
 );
 
-const API_URL = " https://b185b63cf619.ngrok-free.app/api/dados"; // Coloque seu link ngrok aqui
+const API_URL = "https://b185b63cf619.ngrok-free.app/api/dados"; // Coloque seu link ngrok aqui
 
 export default function App() {
   const [dados, setDados] = useState([]);
