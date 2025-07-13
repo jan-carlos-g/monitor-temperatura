@@ -38,9 +38,9 @@ export default function App() {
         });
         if (!res.ok) throw new Error(`Erro na requisição: ${res.status}`);
         const json = await res.json();
-        setDados(json.historico);
-        setMaiores(json.maiores);
-        setMenores(json.menores);
+        setDados(Array.isArray(json.historico) ? json.historico : []);
+        setMaiores(Array.isArray(json.maiores) ? json.maiores : []);
+        setMenores(Array.isArray(json.menores) ? json.menores : []);
       } catch (err) {
         console.error('Erro ao buscar dados:', err);
       }
@@ -52,11 +52,11 @@ export default function App() {
   }, []);
 
   const chartData = {
-    labels: dados.map(d => new Date(d.timestamp).toLocaleTimeString()),
+    labels: Array.isArray(dados) ? dados.map(d => new Date(d.timestamp).toLocaleTimeString()) : [],
     datasets: [
       {
         label: "Temperatura (°C)",
-        data: dados.map(d => d.temperatura),
+        data: Array.isArray(dados) ? dados.map(d => d.temperatura) : [],
         fill: false,
         borderColor: "#FF6600",
         backgroundColor: "#FF6600",
