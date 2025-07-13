@@ -25,6 +25,8 @@ const API_URL = "https://d8f9bf316cfd.ngrok-free.app/api/dados";
 
 export default function App() {
   const [dados, setDados] = useState([]);
+  const [maiores, setMaiores] = useState([]);
+  const [menores, setMenores] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,17 +37,17 @@ export default function App() {
           }
         });
         if (!res.ok) throw new Error(`Erro na requisição: ${res.status}`);
-
         const json = await res.json();
-        setDados(json.slice(-20));
+        setDados(json.historico);
+        setMaiores(json.maiores);
+        setMenores(json.menores);
       } catch (err) {
         console.error('Erro ao buscar dados:', err);
       }
     };
 
-
     fetchData();
-    const interval = setInterval(fetchData, 5000); // atualiza a cada 5s
+    const interval = setInterval(fetchData, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -94,6 +96,55 @@ export default function App() {
           </tbody>
         </table>
       </div>
+
+      <div style={styles.tableBox}>
+        <h2 style={{ ...styles.subtitle, color: "#cc0000" }}>🌡️ 5 Maiores Temperaturas</h2>
+        <table style={styles.table}>
+          <thead>
+            <tr>
+              <th style={styles.th}>Temperatura (°C)</th>
+              <th style={styles.th}>Data e Hora</th>
+            </tr>
+          </thead>
+          <tbody>
+            {maiores.map((d, i) => (
+              <tr key={i} style={i % 2 === 0 ? styles.trEven : styles.trOdd}>
+                <td style={{ ...styles.td, color: "#cc0000", fontWeight: "600" }}>
+                  {d.temperatura.toFixed(1)}
+                </td>
+                <td style={styles.td}>
+                  {new Date(d.timestamp).toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div style={styles.tableBox}>
+        <h2 style={{ ...styles.subtitle, color: "#0066cc" }}>❄️ 5 Menores Temperaturas</h2>
+        <table style={styles.table}>
+          <thead>
+            <tr>
+              <th style={styles.th}>Temperatura (°C)</th>
+              <th style={styles.th}>Data e Hora</th>
+            </tr>
+          </thead>
+          <tbody>
+            {menores.map((d, i) => (
+              <tr key={i} style={i % 2 === 0 ? styles.trEven : styles.trOdd}>
+                <td style={{ ...styles.td, color: "#0066cc", fontWeight: "600" }}>
+                  {d.temperatura.toFixed(1)}
+                </td>
+                <td style={styles.td}>
+                  {new Date(d.timestamp).toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
     </div>
   );
 }
